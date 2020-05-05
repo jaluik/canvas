@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>wave ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <textarea id="log"></textarea>
+    <script src="../common/utils.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                log = document.getElementById("log"),
+                mouse = utils.captureMouse(canvas),
+                rect = { x: canvas.width / 2, y: canvas.height / 2 };
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                var dx = mouse.x - rect.x
+                var dy = mouse.y - rect.y
+                var distance = Math.sqrt(dx ** 2 + dy ** 2)
+                context.fillStyle = "#ff0000"
+                context.fillRect(rect.x - 2, rect.y - 2, 4, 4)
+                context.beginPath()
+                context.moveTo(rect.x, rect.y)
+                context.lineTo(mouse.x, mouse.y)
+                context.closePath()
+                context.stroke()
+                log.value = "distance = " + distance
+            }())
+        }
+    </script>
+</body>
+
+</html>
