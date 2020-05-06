@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>draw curve</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                mouse = utils.captureMouse(canvas);
+
+            canvas.addEventListener("mousemove", () => {
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                var gradient = context.createLinearGradient(0, 0, mouse.x, mouse.y)
+                gradient.addColorStop(0, "#ffffff")
+                gradient.addColorStop(1, "#ff0000")
+                context.fillStyle = gradient
+                context.fillRect(0, 0, mouse.x, mouse.y)
+            })
+
+        }
+    </script>
+</body>
+
+</html>
