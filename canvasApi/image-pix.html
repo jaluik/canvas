@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>Image pix reverse</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                mouse = utils.captureMouse(canvas);
+
+            for (let i = 0; i < canvas.width; i += 10) {
+                for (let j = 0; j < canvas.height; j += 10) {
+                    context.fillStyle = (i % 20 === 0) ? "#f00" : (i % 30 === 0 ? "#0f0" : "#00f")
+                    context.fillRect(i, j, 10, 10)
+                }
+            };
+            var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+            var pixels = imageData.data
+
+            // for (let offset = 0; offset < pixels.length; offset += 4) {
+            //     var r = pixels[offset]
+            //     var g = pixels[offset + 1]
+            //     var b = pixels[offset + 2]
+            //     var y = (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
+            //     pixels[offset] = pixels[offset + 1] = pixels[offset + 2] = y
+            // }
+            for (let y = 0; y < imageData.height; y++) {
+                for (let x = 0; x < imageData.width; x++) {
+                    var dx = x - mouse.x,
+                        dy = y - mouse.y
+                    dist = Math.sqrt(dx ** 2 + dy ** 2),
+                        offset = (x + y * imageData.width) * 4,
+                        r = pixels[offset],
+                        g = pixels[offset + 1],
+                        b = pixels[offset + 2];
+
+                    pixels[offset] = Math.cos(r * dist * 0.001) * 256
+                    pixels[offset + 1] = Math.sin(g * dist * 0.001) * 256
+                    pixels[offset + 2] = Math.cos(b * dist * 0.0005) * 256
+                }
+            }
+            context.putImageData(imageData, 0, 0)
+
+
+        }
+    </script>
+</body>
+
+</html>
