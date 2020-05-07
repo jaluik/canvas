@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>follow me arrow</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../rotate/arrow.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                mouse = utils.captureMouse(canvas),
+                arrow = new Arrow(),
+                speed = 3;
+
+            arrow.x = canvas.width / 2;
+            arrow.y = canvas.height / 2;
+
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                var dx = mouse.x - arrow.x
+                var dy = mouse.y - arrow.y
+                var angle = Math.atan2(dy, dx)
+                var vx = Math.cos(angle) * speed
+                var vy = Math.sin(angle) * speed
+                arrow.x += vx
+                arrow.y += vy
+                arrow.rotation = angle
+                arrow.draw(context)
+
+            })()
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>wave ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                ball = new Ball(),
+                vy = 2,
+                vx = 1;
+            ball.x = 50;
+            ball.y = 100;
+
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                ball.x += vx
+                ball.y += vy
+                ball.draw(context)
+            }())
+
+        }
+    </script>
+</body>
+
+</html>
