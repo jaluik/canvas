@@ -2,7 +2,7 @@ function Arrow() {
   this.x = 0;
   this.y = 0;
   this.color = "#ffff00";
-  this.rotate = 0;
+  this.rotation = 0;
 }
 
 Arrow.prototype.draw = function (context) {

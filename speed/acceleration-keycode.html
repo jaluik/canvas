@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>accelerate ball keycode</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                ball = new Ball(),
+                vx = 0,
+                vy = 0,
+                ax = 0,
+                ay = 0;
+
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            window.addEventListener("keydown", e => {
+                if (e.keyCode === 37) {
+                    ax = -0.1;
+                }
+                if (e.keyCode === 38) {
+                    ay = -0.1;
+                }
+                if (e.keyCode === 39) {
+                    ax = 0.1
+                }
+                if (e.keyCode === 40) {
+                    ay = 0.1;
+                }
+            })
+
+            window.addEventListener("keyup", () => {
+                ax = 0;
+                ay = 0;
+            });
+
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                vx += ax
+                vy += ay
+                ball.x += vx
+                ball.y += vy
+                ball.draw(context)
+            }())
+
+        }
+    </script>
+</body>
+
+</html>
