@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>accelerate ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <textarea id="log"></textarea>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                log = document.getElementById("log"),
+                balls = [],
+                numBalls = 10;
+
+            for (let i = 0; i < numBalls; i++) {
+                const ball = new Ball(20)
+                ball.id = `ball${i}`
+                ball.x = Math.random() * canvas.width
+                ball.y = Math.random() * canvas.height
+                ball.vx = Math.random() * 2 - 1
+                ball.vy = Math.random() * 2 - 1
+                balls.push(ball)
+            }
+
+            function draw(ball, pos) {
+                ball.x += ball.vx
+                ball.y += ball.vy
+                if (ball.x - ball.radius > canvas.width || ball.x + ball.radus < 0 || ball.y - ball.radius > canvas.height || ball.y + ball.radus < 0) {
+                    balls.splice(pos, 1)
+                    if (balls.length > 0) {
+                        log.value = `Remove ${ball.id}`
+                    } else {
+                        log.value = 'All Gone'
+                    }
+                }
+                ball.draw(context)
+
+            }
+
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                let index = balls.length
+                while (index--) {
+                    draw(balls[index], index)
+                }
+            }())
+
+        }
+    </script>
+</body>
+
+</html>
