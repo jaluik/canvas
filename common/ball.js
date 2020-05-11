@@ -7,7 +7,7 @@ function Ball(radius = 40, color = "#ff0000") {
   this.vy = 0;
   this.scaleX = 1;
   this.scaleY = 1;
-  this.color = color;
+  this.color = typeof color === "string" ? color : `#${color}`;
   this.lineWidth = 1;
 }
 

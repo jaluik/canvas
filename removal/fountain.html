@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>Fountain</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                balls = [],
+                gravity = 0.5,
+                numBalls = 80;
+
+            for (let i = 0; i < numBalls; i++) {
+                let ball = new Ball(2, utils.colorToRGB(Math.random() * 0xffffff))
+                ball.x = canvas.width / 2
+                ball.y = canvas.height
+                ball.vx = Math.random() * 8 - 4
+                ball.vy = Math.random() * -10 - 10
+                balls.push(ball)
+            }
+
+            function draw(ball, pos) {
+                ball.vy += gravity
+                ball.x += ball.vx
+                ball.y += ball.vy
+                if (ball.x - ball.radius > canvas.width || ball.x + ball.radus < 0 || ball.y - ball.radius > canvas.height || ball.y + ball.radus < 0) {
+                    ball.x = canvas.width / 2
+                    ball.y = canvas.height
+                    ball.vx = Math.random() * 8 - 4
+                    ball.vy = Math.random() * -10 - 10
+                }
+                ball.draw(context)
+            }
+
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                balls.forEach(draw)
+            }())
+
+        }
+    </script>
+</body>
+
+</html>
