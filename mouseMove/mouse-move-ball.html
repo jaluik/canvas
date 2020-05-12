@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>accelerate ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <textarea id="log"></textarea>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                log = document.getElementById("log"),
+                mouse = utils.captureMouse(canvas),
+                ball = new Ball();
+
+            ball.x = canvas.width / 2
+            ball.y = canvas.height / 2
+            ball.draw(context)
+
+            canvas.addEventListener('mousedown', () => {
+                if (utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
+                    log.value = 'in balls mousedown'
+                } else {
+                    log.value = 'canvas: mousedown'
+                }
+            })
+            canvas.addEventListener('mouseup', () => {
+                if (utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
+                    log.value = 'in balls mouseup'
+                } else {
+                    log.value = 'canvas: mouseup'
+                }
+            })
+            canvas.addEventListener('mousemove', () => {
+                if (utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
+                    log.value = 'in balls mousemove'
+                } else {
+                    log.value = 'canvas: mousemove'
+                }
+            })
+
+
+        }
+    </script>
+</body>
+
+</html>

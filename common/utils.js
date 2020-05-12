@@ -31,6 +31,42 @@ utils.captureMouse = function (element) {
   return mouse;
 };
 
+utils.captureTouch = function (element) {
+  var touch = { x: null, y: null, isPress: false };
+
+  element.addEventListener("touchstart", () => {
+    touch.isPress = true;
+  });
+  element.addEventListener("touchend", () => {
+    touch.isPress = false;
+    touch.x = null;
+    touch.y = null;
+  });
+
+  element.addEventListener("touchstart", (event) => {
+    var x,
+      y,
+      touch_event = event.touchs[0];
+    if (touch_event.pageX || touch_event.pageY) {
+      x = touch_event.pageX;
+      y = touch_event.pageY;
+    } else {
+      x =
+        touch_event.clientX +
+        document.body.scrollLeft +
+        document.documentElement.scrollLeft;
+      y =
+        touch_event.clientY +
+        document.body.scrollTop +
+        document.documentElement.scrollTop;
+    }
+    x -= element.offsetLeft;
+    y -= element.offsetTop;
+    touch.x = x;
+    touch.y = y;
+  });
+};
+
 utils.colorToRGB = function (color, alpha = 1) {
   if (typeof color === "string" && color[0] === "#") {
     color = window.parseInt(color.slice(1), 16);
@@ -60,4 +96,13 @@ utils.parseColor = function (color, toNumber) {
     }
     return color;
   }
+};
+
+utils.containsPoint = function (rect, x, y) {
+  return !(
+    x < rect.x ||
+    x > rect.x + rect.width ||
+    y < rect.y ||
+    y > rect.y + rect.height
+  );
 };
