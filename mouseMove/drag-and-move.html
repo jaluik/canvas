@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>drag and move ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                mouse = utils.captureMouse(canvas),
+                offsetX = 0,
+                offsetY = 0,
+                isMouseDown = false,
+                gravity = 0.2,
+                bounce = -0.7,
+                vx = Math.random() * 10 - 5,
+                vy = -10,
+                startX = 0,
+                startY = 0,
+                startTime = 0,
+                moveFraction = 5,
+                endX = 0,
+                endY = 0,
+                endTime = 0,
+                ball = new Ball();
+
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+
+
+            canvas.addEventListener("mousedown", () => {
+                if (utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
+                    isMouseDown = true;
+                    vx = 0;
+                    vy = 0;
+                    startX = mouse.x;
+                    startY = mouse.y;
+                    startTime = +new Date();
+                    offsetX = mouse.x - ball.x;
+                    offsetY = mouse.y - ball.y;
+                    canvas.addEventListener("mousemove", onMousemove)
+                    canvas.addEventListener("mouseup", onMouseUp)
+
+                }
+
+            })
+
+            function onMousemove() {
+                ball.x = mouse.x - offsetX;
+                ball.y = mouse.y - offsetY;
+            }
+
+            function onMouseUp() {
+                isMouseDown = false;
+                endX = mouse.x;
+                endY = mouse.y;
+                endTime = +new Date();
+                canvas.removeEventListener("mousemove", onMousemove)
+                canvas.removeEventListener("mouseup", onMouseUp)
+            }
+
+            function checkBoundries() {
+                var left = 0,
+                    right = canvas.width,
+                    top = 0,
+                    bottom = canvas.height;
+                if (endX - startX !== 0) {
+                    vx += (endX - startX) * moveFraction / (endTime - startTime);
+                    endX = startX = 0
+                }
+                if (endY - startY !== 0) {
+                    vy += (endY - startY) * moveFraction / (endTime - startTime);
+                    endY = startY = 0
+                }
+
+                vy += gravity;
+                ball.x += vx;
+                ball.y += vy;
+
+                if (ball.x + ball.radius > right) {
+                    ball.x = right - ball.radius;
+                    vx *= bounce
+                } else if (ball.x - ball.radius < left) {
+                    ball.x = left + ball.radius;
+                    vx *= bounce
+                }
+
+                if (ball.y + ball.radius > bottom) {
+                    ball.y = bottom - ball.radius;
+                    vy *= bounce
+                } else if (ball.y - ball.radius < top) {
+                    ball.y = top + ball.radius;
+                    vy *= bounce
+                }
+            }
+
+            (function draw() {
+                window.requestAnimationFrame(draw, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                if (!isMouseDown) {
+                    checkBoundries()
+                }
+                ball.draw(context)
+            }())
+
+
+
+        }
+    </script>
+</body>
+
+</html>

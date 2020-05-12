@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>drag ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                mouse = utils.captureMouse(canvas),
+                offsetX = 0,
+                offsetY = 0,
+                ball = new Ball();
+
+
+            canvas.addEventListener("mousedown", () => {
+                if (utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
+                    offsetX = mouse.x - ball.x;
+                    offsetY = mouse.y - ball.y;
+                    canvas.addEventListener("mousemove", onMousemove)
+                    canvas.addEventListener("mouseup", onMouseUp)
+
+                }
+
+            })
+
+            function onMousemove() {
+                ball.x = mouse.x - offsetX;
+                ball.y = mouse.y - offsetY;
+            }
+
+            function onMouseUp() {
+                canvas.removeEventListener("mousemove", onMousemove)
+                canvas.removeEventListener("mouseup", onMouseUp)
+            }
+
+            (function draw() {
+                window.requestAnimationFrame(draw, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                ball.draw(context)
+            }())
+
+
+
+        }
+    </script>
+</body>
+
+</html>
