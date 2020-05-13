@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>easing ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                ball = new Ball(),
+                mouse = utils.captureMouse(canvas),
+                easing = 0.05,
+                isMouseDown = false,
+                targetX = canvas.width / 2,
+                targetY = canvas.height / 2,
+                animationRequest;
+
+            window.addEventListener("mousedown", () => {
+                isMouseDown = true
+                window.addEventListener("mousemove", onMouseMove)
+                window.addEventListener("mouseup", onMouseUp)
+            })
+
+            function onMouseMove() {
+                ball.x = mouse.x;
+                ball.y = mouse.y;
+            }
+            function onMouseUp() {
+                isMouseDown = false;
+                window.removeEventListener("mousemove", onMouseMove)
+                window.removeEventListener("mouseup", onMouseUp)
+            }
+
+            (function draw() {
+                animationRequest = window.requestAnimationFrame(draw, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+
+                var dx = targetX - ball.x
+
+                if (Math.abs(dx) < 1) {
+                    window.cancelAnimationFrame(animationRequest)
+                    ball.x = targetX
+                }
+                if (!isMouseDown) {
+                    var vx = (targetX - ball.x) * easing,
+                        vy = (targetY - ball.y) * easing;
+                    ball.x += vx;
+                    ball.y += vy;
+                }
+
+                ball.draw(context)
+            }())
+
+        }
+    </script>
+</body>
+
+</html>

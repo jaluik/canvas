@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>easing ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                ball = new Ball(),
+                mouse = utils.captureMouse(canvas),
+                easing = 0.05;
+
+
+
+            (function draw() {
+                animationRequest = window.requestAnimationFrame(draw, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+
+
+                ball.x += (mouse.x - ball.x) * easing;
+                ball.y += (mouse.y - ball.y) * easing;
+
+                ball.draw(context)
+            }())
+
+        }
+    </script>
+</body>
+
+</html>

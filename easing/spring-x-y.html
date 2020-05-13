@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>easing ball</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                ball = new Ball(),
+                spring = 0.03,
+                friction = 0.95,
+                targetX = canvas.width / 2,
+                targetY = canvas.height / 2,
+                vx = 20,
+                vy = 0;
+
+
+            (function draw() {
+                var animation = window.requestAnimationFrame(draw, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                var dx = targetX - ball.x,
+                    ax = dx * spring;
+                vx += ax;
+                vx *= friction;
+                var dy = targetY - ball.y,
+                    ay = dy * spring;
+                vy += ay;
+                vy *= friction;
+                if (Math.abs(vx) >= 0.001 && Math.abs(vx) >= 0.001) {
+                    ball.x += vx;
+                    ball.y += vy;
+                } else {
+                    window.cancelAnimationFrame(animation)
+                }
+                ball.draw(context)
+            }())
+
+
+        }
+    </script>
+</body>
+
+</html>
