@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>spring mouse ball line</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                mouse = utils.captureMouse(canvas),
+                ball = new Ball(),
+                spring = 0.03,
+                gravity = 2,
+                friction = 0.95,
+                vx = 0,
+                vy = 0;
+
+
+            (function draw() {
+                var animation = window.requestAnimationFrame(draw, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                var dx = mouse.x - ball.x,
+                    ax = dx * spring;
+                vx += ax;
+                vx *= friction;
+                var dy = mouse.y - ball.y,
+                    ay = dy * spring;
+                vy += gravity;
+                vy += ay;
+                vy *= friction;
+                if (Math.abs(vx) >= 0.001 && Math.abs(vx) >= 0.001) {
+                    ball.x += vx;
+                    ball.y += vy;
+                }
+                context.beginPath()
+                context.moveTo(ball.x, ball.y)
+                context.lineTo(mouse.x, mouse.y)
+                context.stroke()
+                ball.draw(context)
+            }())
+
+
+        }
+    </script>
+</body>
+
+</html>

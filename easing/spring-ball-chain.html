@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../common/style.css" rel="stylesheet" type="text/css">
+    <title>spring mouse ball line</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                mouse = utils.captureMouse(canvas),
+                ball0 = new Ball(),
+                ball1 = new Ball(),
+                ball2 = new Ball(),
+                spring = 0.03,
+                gravity = 2,
+                friction = 0.9;
+
+            function move(ball, targetX, targetY) {
+                var dx = targetX - ball.x,
+                    ax = dx * spring;
+                ball.vx += ax;
+                ball.vx *= friction;
+                var dy = targetY - ball.y,
+                    ay = dy * spring;
+                ball.vy += gravity;
+                ball.vy += ay;
+                ball.vy *= friction;
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+            }
+
+            (function draw() {
+                var animation = window.requestAnimationFrame(draw, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                move(ball0, mouse.x, mouse.y)
+                move(ball1, ball0.x, ball0.y)
+                move(ball2, ball1.x, ball1.y)
+                context.beginPath()
+                context.moveTo(mouse.x, mouse.y)
+                context.lineTo(ball0.x, ball0.y)
+                context.lineTo(ball1.x, ball1.y)
+                context.lineTo(ball2.x, ball2.y)
+                context.stroke()
+                ball0.draw(context)
+                ball1.draw(context)
+                ball2.draw(context)
+            }())
+
+
+        }
+    </script>
+</body>
+
+</html>
