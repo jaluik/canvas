@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../common/style.css" rel="stylesheet" type="text/css" />
+    <title>spring 3 balls</title>
+  </head>
+
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+      window.onload = function() {
+        var canvas = document.getElementById("canvas"),
+          context = canvas.getContext("2d"),
+          mouse = utils.captureMouse(canvas),
+          ball = new Ball(),
+          handles = [],
+          numHandles = 3,
+          spring = 0.03,
+          friction = 0.9,
+          movingHandle = null;
+
+        for (let i = 0; i < numHandles; i++) {
+          let handle = new Ball(10, "#0000ff");
+          handle.x = Math.random() * canvas.width;
+          handle.y = Math.random() * canvas.height;
+          handles.push(handle);
+        }
+
+        window.addEventListener("mousedown", () => {
+          handles.forEach(handle => {
+            if (utils.containsPoint(handle.getBounds(), mouse.x, mouse.y)) {
+              movingHandle = handle;
+            }
+          });
+        });
+
+        window.addEventListener("mouseup", () => {
+          movingHandle = null;
+        });
+
+        window.addEventListener("mousemove", () => {
+          if (movingHandle) {
+            movingHandle.x = mouse.x;
+            movingHandle.y = mouse.y;
+          }
+        });
+
+        function applyHanle(handle) {
+          let dx = handle.x - ball.x;
+          let dy = handle.y - ball.y;
+
+          ball.vx += dx * spring;
+          ball.vy += dy * spring;
+        }
+
+        function drawHandle(handle) {
+          context.moveTo(ball.x, ball.y);
+          context.lineTo(handle.x, handle.y);
+          context.stroke();
+          handle.draw(context);
+        }
+
+        (function draw() {
+          window.requestAnimationFrame(draw, canvas);
+          context.clearRect(0, 0, canvas.width, canvas.height);
+
+          handles.forEach(applyHanle);
+          ball.vx *= friction;
+          ball.vy *= friction;
+          ball.x += ball.vx;
+          ball.y += ball.vy;
+          context.beginPath();
+          handles.forEach(drawHandle);
+          ball.draw(context);
+        })();
+      };
+    </script>
+  </body>
+</html>
