@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../common/style.css" rel="stylesheet" type="text/css" />
+    <title>spring offset</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <textarea id="log" width="400" height="400"></textarea>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                log = document.getElementById("log"),
+                mouse = utils.captureMouse(canvas),
+                ballA = new Ball(),
+                ballB = new Ball();
+
+            ballA.x = canvas.width / 2;
+            ballA.y = canvas.height / 2;
+
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame, canvas);
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                ballB.x = mouse.x;
+                ballB.y = mouse.y;
+                var boundsA = ballA.getBounds()
+                var boundsB = ballB.getBounds()
+                context.strokeRect(boundsA.x, boundsA.y, boundsA.width, boundsA.height)
+                context.strokeRect(boundsB.x, boundsB.y, boundsB.width, boundsB.height)
+                if (utils.intersects(boundsA, boundsB)) {
+                    log.value = 'hit!'
+                } else {
+                    log.value = 'no hit!'
+                }
+                ballA.draw(context);
+                ballB.draw(context);
+            })();
+        };
+    </script>
+</body>
+
+</html>
