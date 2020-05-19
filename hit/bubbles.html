@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../common/style.css" rel="stylesheet" type="text/css" />
+    <title>spring offset</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                centerBall = new Ball(100, '#ccc'),
+                balls = [],
+                numBalls = 10,
+                spring = 0.03,
+                bounce = -1;
+            centerBall.x = canvas.width / 2;
+            centerBall.y = canvas.height / 2
+
+            for (let i = 0; i < numBalls; i++) {
+                let ball = new Ball(Math.random() * 40 + 5, utils.parseColor(Math.random() * 0xffffff));
+                ball.x = Math.random() * canvas.width / 2
+                ball.y = Math.random() * canvas.height / 2
+                ball.vx = Math.random() * 6 - 3
+                ball.vy = Math.random() * 6 - 3
+                balls.push(ball)
+            }
+
+            function move(ball) {
+                ball.x += ball.vx
+                ball.y += ball.vy
+                if (ball.x - ball.radius < 0) {
+                    ball.x = ball.radius
+                    ball.vx *= bounce
+                }
+                if (ball.x + ball.radius > canvas.width) {
+                    ball.x = canvas.width - ball.radius
+                    ball.vx *= bounce
+                }
+                if (ball.y - ball.radius < 0) {
+                    ball.y = ball.radius
+                    ball.vy *= bounce
+                }
+                if (ball.y + ball.radius > canvas.height) {
+                    ball.y = canvas.height - ball.radius
+                    ball.vy *= bounce
+                }
+
+            }
+
+            function draw(ball) {
+                let dx = ball.x - centerBall.x;
+                let dy = ball.y - centerBall.y;
+                let dis = Math.sqrt(dx * dx, dy * dy)
+                let min_dis = ball.radius + centerBall.radius
+                if (dis <= min_dis) {
+                    let angle = Math.atan2(dy, dx)
+                    let tx = centerBall.x + Math.cos(angle) * min_dis
+                    let ty = centerBall.y + Math.sin(angle) * min_dis
+                    ball.vx += (tx - ball.x) * spring
+                    ball.vy += (ty - ball.y) * spring
+                }
+                ball.draw(context)
+            }
+
+
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame, canvas);
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                balls.forEach(move)
+                balls.forEach(draw)
+
+                centerBall.draw(context)
+            })();
+        };
+    </script>
+</body>
+
+</html>
