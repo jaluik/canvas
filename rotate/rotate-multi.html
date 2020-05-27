@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../common/style.css" rel="stylesheet" type="text/css" />
+    <title>rotate multi</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="../common/utils.js"></script>
+    <script src="../common/ball.js"></script>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                mouse = utils.captureMouse(canvas),
+                balls = [],
+                numBalls = 10,
+                vr = 0.05,
+                centerX = canvas.width / 2,
+                centerY = canvas.height / 2,
+                cos, sin;
+
+            for (let i = 0; i < numBalls; i++) {
+                let ball = new Ball()
+                ball.x = Math.random() * canvas.width
+                ball.y = Math.random() * canvas.height
+                balls.push(ball)
+            }
+
+            function move(ball) {
+                console.log(ball.x, ball.y);
+                let x1 = ball.x - centerX,
+                    y1 = ball.y - centerY,
+                    x2 = x1 * cos - y1 * sin,
+                    y2 = y1 * cos + x1 * sin;
+                ball.x = centerX + x2;
+                ball.y = centerY + y2;
+            }
+
+            function draw(ball) {
+                ball.draw(context)
+            }
+
+
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame, canvas)
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                let angle = (mouse.x - centerX) * 0.0005;
+                cos = Math.cos(angle)
+                sin = Math.sin(angle)
+                balls.forEach(move)
+                balls.forEach(draw)
+            }())
+
+        };
+    </script>
+</body>
+
+</html>
