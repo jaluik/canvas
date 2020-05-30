@@ -1,112 +1,104 @@
 <!DOCTYPE html>
 <html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../common/style.css" rel="stylesheet" type="text/css" />
+    <title>drag and throw ball</title>
+  </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../common/style.css" rel="stylesheet" type="text/css">
-    <title>drag and move ball</title>
-</head>
-
-<body>
+  <body>
     <canvas id="canvas" width="400" height="400"></canvas>
     <script src="../common/utils.js"></script>
     <script src="../common/ball.js"></script>
     <script>
-        window.onload = function () {
-            var canvas = document.getElementById("canvas"),
-                context = canvas.getContext("2d"),
-                mouse = utils.captureMouse(canvas),
-                offsetX = 0,
-                offsetY = 0,
-                isMouseDown = false,
-                gravity = 0.2,
-                bounce = -0.7,
-                vx = Math.random() * 10 - 5,
-                vy = -10,
-                oldX = 0,
-                oldY = 0,
-                ball = new Ball();
+      window.onload = function () {
+        var canvas = document.getElementById("canvas"),
+          context = canvas.getContext("2d"),
+          mouse = utils.captureMouse(canvas),
+          offsetX = 0,
+          offsetY = 0,
+          isMouseDown = false,
+          gravity = 0.2,
+          bounce = -0.7,
+          vx = Math.random() * 10 - 5,
+          vy = -10,
+          oldX = 0,
+          oldY = 0,
+          ball = new Ball();
 
-            ball.x = canvas.width / 2;
-            ball.y = canvas.height / 2;
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height / 2;
 
+        canvas.addEventListener("mousedown", () => {
+          if (utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
+            isMouseDown = true;
+            vx = 0;
+            vy = 0;
+            oldX = ball.x;
+            oldY = ball.y;
+            offsetX = mouse.x - ball.x;
+            offsetY = mouse.y - ball.y;
+            canvas.addEventListener("mousemove", onMousemove);
+            canvas.addEventListener("mouseup", onMouseUp);
+          }
+        });
 
-            canvas.addEventListener("mousedown", () => {
-                if (utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
-                    isMouseDown = true;
-                    vx = 0;
-                    vy = 0;
-                    oldX = ball.x;
-                    oldY = ball.y;
-                    offsetX = mouse.x - ball.x;
-                    offsetY = mouse.y - ball.y;
-                    canvas.addEventListener("mousemove", onMousemove)
-                    canvas.addEventListener("mouseup", onMouseUp)
-
-                }
-
-            })
-
-            function onMousemove() {
-                ball.x = mouse.x - offsetX;
-                ball.y = mouse.y - offsetY;
-            }
-
-            function onMouseUp() {
-                isMouseDown = false;
-                canvas.removeEventListener("mousemove", onMousemove)
-                canvas.removeEventListener("mouseup", onMouseUp)
-            }
-
-            function checkBoundries() {
-                var left = 0,
-                    right = canvas.width,
-                    top = 0,
-                    bottom = canvas.height;
-                vy += gravity;
-                ball.x += vx;
-                ball.y += vy;
-
-                if (ball.x + ball.radius > right) {
-                    ball.x = right - ball.radius;
-                    vx *= bounce
-                } else if (ball.x - ball.radius < left) {
-                    ball.x = left + ball.radius;
-                    vx *= bounce
-                }
-
-                if (ball.y + ball.radius > bottom) {
-                    ball.y = bottom - ball.radius;
-                    vy *= bounce
-                } else if (ball.y - ball.radius < top) {
-                    ball.y = top + ball.radius;
-                    vy *= bounce
-                }
-            }
-
-            function trackVolocity() {
-                vx = ball.x - oldX;
-                vy = ball.y - oldY;
-                oldX = ball.x;
-                oldY = ball.y;
-            }
-
-            (function draw() {
-                window.requestAnimationFrame(draw, canvas)
-                context.clearRect(0, 0, canvas.width, canvas.height)
-                if (isMouseDown) {
-                    trackVolocity()
-                } else {
-                    checkBoundries()
-                }
-                ball.draw(context)
-            }())
-
-
-
+        function onMousemove() {
+          ball.x = mouse.x - offsetX;
+          ball.y = mouse.y - offsetY;
         }
-    </script>
-</body>
 
+        function onMouseUp() {
+          isMouseDown = false;
+          canvas.removeEventListener("mousemove", onMousemove);
+          canvas.removeEventListener("mouseup", onMouseUp);
+        }
+
+        function checkBoundries() {
+          var left = 0,
+            right = canvas.width,
+            top = 0,
+            bottom = canvas.height;
+          vy += gravity;
+          ball.x += vx;
+          ball.y += vy;
+
+          if (ball.x + ball.radius > right) {
+            ball.x = right - ball.radius;
+            vx *= bounce;
+          } else if (ball.x - ball.radius < left) {
+            ball.x = left + ball.radius;
+            vx *= bounce;
+          }
+
+          if (ball.y + ball.radius > bottom) {
+            ball.y = bottom - ball.radius;
+            vy *= bounce;
+          } else if (ball.y - ball.radius < top) {
+            ball.y = top + ball.radius;
+            vy *= bounce;
+          }
+        }
+
+        function trackVolocity() {
+          vx = ball.x - oldX;
+          vy = ball.y - oldY;
+          oldX = ball.x;
+          oldY = ball.y;
+        }
+
+        (function draw() {
+          window.requestAnimationFrame(draw, canvas);
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          if (isMouseDown) {
+            trackVolocity();
+          } else {
+            checkBoundries();
+          }
+          ball.draw(context);
+        })();
+      };
+    </script>
+  </body>
 </html>
