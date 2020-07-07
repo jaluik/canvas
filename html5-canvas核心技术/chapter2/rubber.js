@@ -44,6 +44,10 @@ function saveDrawingSurface() {
   );
 }
 
+function restoreDrawingSurface() {
+  context.putImageData(drawingSurfaceImageData, 0, 0);
+}
+
 function updateRubberbandRectangle(loc) {
   rubberBandRect.width = Math.abs(loc.x - mousedown.x);
   rubberBandRect.height = Math.abs(loc.y - mousedown.y);
@@ -86,3 +90,49 @@ function drawGuidewires(x, y) {
   drawHorizontalLine(y);
   context.restore();
 }
+
+canvas.onmousedown = function (e) {
+  const loc = windowToCanvas(e.clientX, e.clientY);
+  e.preventDefault();
+  saveDrawingSurface();
+  mousedown.x = loc.x;
+  mousedown.y = loc.y;
+  dragging = true;
+};
+
+canvas.onmousemove = function (e) {
+  let loc;
+  if (dragging) {
+    e.preventDefault();
+    loc = windowToCanvas(e.clientX, e.clientY);
+    restoreDrawingSurface();
+    updateRubberband(loc);
+    if (guidewire) {
+      drawGuidewires(loc.x, loc.y);
+    }
+  }
+};
+
+canvas.onmouseup = function (e) {
+  loc = windowToCanvas(e.clientX, e.clientY);
+  restoreDrawingSurface();
+  updateRubberband(loc);
+  dragging = false;
+};
+
+eraseAllButton.onclick = function (e) {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  drawGrid("lightgray", 10, 10);
+  saveDrawingSurface();
+};
+
+strokeStyleSelect.onchange = function (e) {
+  context.strokeStyle = strokeStyleSelect.value;
+};
+
+guidewireCheckbox.onchange = function (e) {
+  guidewires = guidewireCheckbox.checked;
+};
+
+context.strokeStyle = strokeStyleSelect.value;
+drawGrid("lightgray", 10, 10);
